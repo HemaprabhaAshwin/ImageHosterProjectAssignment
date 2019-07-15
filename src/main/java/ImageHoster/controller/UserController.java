@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -39,10 +40,20 @@ public class UserController {
 
     //This controller method is called when the request pattern is of type 'users/registration' and also the incoming request is of POST type
     //This method calls the business logic and after the user record is persisted in the database, directs to login page
+    //Added the logic to check the strength of the password
     @RequestMapping(value = "users/registration", method = RequestMethod.POST)
-    public String registerUser(User user) {
-        userService.registerUser(user);
-        return "redirect:/users/login";
+    public String registerUser(User user, @RequestParam(name="password") String password, Model model) {
+        if (password.matches("(?=.*[0-9]).*") &&
+                (password.matches("(?=.*[a-z]).*") || password.matches("(?=.*[A-Z]).*")) &&
+                password.matches("(?=.*[~!@#$%^&*()_-]).*")
+        ) {
+            userService.registerUser(user);
+            return "redirect:/users/login";
+        }
+        String error = "Password must contain atleast 1 alphabet, 1 number & 1 special character";
+        model.addAttribute("passwordTypeError", error);
+        model.addAttribute("User", user);
+        return "/users/registration";
     }
 
     //This controller method is called when the request pattern is of type 'users/login'
