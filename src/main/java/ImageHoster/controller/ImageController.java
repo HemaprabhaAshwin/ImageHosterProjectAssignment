@@ -1,8 +1,10 @@
 package ImageHoster.controller;
 
+import ImageHoster.model.Comment;
 import ImageHoster.model.Image;
 import ImageHoster.model.Tag;
 import ImageHoster.model.User;
+import ImageHoster.service.CommentService;
 import ImageHoster.service.ImageService;
 import ImageHoster.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ public class ImageController {
 
     @Autowired
     private TagService tagService;
+
 
     //This method displays all the images in the user home page after successful login
     @RequestMapping("images")
@@ -59,6 +62,7 @@ public class ImageController {
         Image image = imageService.getImageById(id);
         model.addAttribute("image", image);
         model.addAttribute("tags", image.getTags());
+        model.addAttribute("comments",image.getComments());
         return "images/image";
     }
 
@@ -94,6 +98,7 @@ public class ImageController {
         return "redirect:/images";
     }
 
+
     //This controller method is called when the request pattern is of type 'editImage'
     //This method fetches the image with the corresponding id from the database and adds it to the model with the key as 'image'
     //The method then returns 'images/edit.html' file wherein you fill all the updated details of the image
@@ -105,12 +110,15 @@ public class ImageController {
         Image image = imageService.getImage(imageId);
         User user = (User) session.getAttribute("loggeduser");
         String tags = convertTagsToString(image.getTags());
+        List<Comment> comments = image.getComments();
         String error="Only the owner of the image can edit the image";
         model.addAttribute("image", image);
         model.addAttribute("tags", tags);
+        model.addAttribute("comments", comments);
         //Added the logic for checking if the user who is trying to edit is the same as the one who uploaded the image.. if not error out
         if(image.getUser().getId()!=user.getId()) {
             model.addAttribute("editError", error);
+            model.addAttribute("comments", comments);
             return "images/image";
         }
         return "images/edit";

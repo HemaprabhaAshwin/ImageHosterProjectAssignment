@@ -1,10 +1,11 @@
-/*
+
 package ImageHoster.controller;
 
 import ImageHoster.model.Image;
 import ImageHoster.model.Tag;
 import ImageHoster.model.User;
 import ImageHoster.model.UserProfile;
+import ImageHoster.service.CommentService;
 import ImageHoster.service.ImageService;
 import ImageHoster.service.TagService;
 import org.junit.Test;
@@ -40,6 +41,7 @@ public class ImageControllerTest {
     @MockBean
     private TagService tagService;
 
+
     //This test checks the controller logic to get all the images after the user is logged in the application and checks whether the logic returns the html file 'images.html'
     @Test
     public void getUserImages() throws Exception {
@@ -61,7 +63,6 @@ public class ImageControllerTest {
                 .andExpect(view().name("images"))
                 .andExpect(content().string(containsString("Welcome User. These are the images")));
     }
-
 
     //This test checks the controller logic when the logged in user sends the GET request to the server to get the details of a particular image and checks whether the logic returns the html file 'images/image.html'
     @Test
@@ -116,7 +117,6 @@ public class ImageControllerTest {
                 .andExpect(view().name("images/upload"))
                 .andExpect(content().string(containsString("Upload New Image")));
     }
-
 
     //This test checks the controller logic when the logged in submits the image to be uploaded in the application and checks whether the logic returns the html file 'images.html'
     @Test
@@ -189,6 +189,7 @@ public class ImageControllerTest {
                 .andExpect(view().name("images/edit"))
                 .andExpect(content().string(containsString("Edit Image")));
     }
+
 
 
     //This test checks the controller logic when non owner of the image sends the GET request to get the form to edit the image and checks whether the Model type object contains the desired attribute with desired value
@@ -310,4 +311,3 @@ public class ImageControllerTest {
     }
 }
 
-*/
